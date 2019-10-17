@@ -30,7 +30,7 @@ int main(void)
 void draw_stuff(SDL_Instance instance, int x, int y)
 {
 	SDL_SetRenderDrawColor(instance.renderer, 0xFF, 0xFF, 0xFF, 0xFF);
-	SDL_RenderDrawLine(instance.renderer, 500, 500, x, y);
+	SDL_RenderDrawLine(instance.renderer, 300, 300, x, y);
 }
 
 int poll_events(int *x, int *y)
@@ -55,6 +55,16 @@ int poll_events(int *x, int *y)
 				return (0);
 			}
 			else if (key.keysym.scancode == 0x50)
+			{
+				*x -=3 ;
+				return(0);
+			}
+			else if (key.keysym.scancode == 0x52)
+			{
+				*y +=3 ;
+				return(0);
+			}
+			else if (key.keysym.scancode == 0x51)
 			{
 				*y -=3 ;
 				return(0);
