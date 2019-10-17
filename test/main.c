@@ -1,51 +1,66 @@
-#include <SDL2/SDL.h>
-#include <stdio.h>
+#include "structure.h"
+#include <stdlib.h>
 
-/** draw funcion
-*
-*/
-void draw_stuff(SDL_Renderer *renderer)
-{
-	SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF);
-	SDL_RenderDrawLine(renderer, 10, 10, 100, 100);
-}
+
 int main(void)
 {
-	SDL_Window *window;
-	SDL_Renderer *renderer;
+	SDL_Instance instance;
+	int x = 500;
+	int y = 300;
 
-	/*initialice SDL*/
-	if (SDL_Init(SDL_INIT_VIDEO) != 0)
-	{
-		fprintf(stderr, "Unable to initialize SDL: %s\n", SDL_GetError());
+	if (init_instance(&instance) != 0)
 		return (1);
-	}
-	/* Create a new window */
-	window = SDL_CreateWindow("SDL2 \\o/", SDL_WINDOWPOS_CENTERED,
-				  SDL_WINDOWPOS_CENTERED, 1260, 720, 0);
-	if (window == NULL)
-	{
-		fprintf(stderr, "SQLCreateWindow Error: %sn", SDL_GetError());
-		SDL_Quit();
-		return (1);
-	}
-	/* Create a new Renderer instance linked to the window */
-	renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED
-				      | SDL_RENDERER_PRESENTVSYNC);
-	if (renderer == NULL)
-	{
-		SDL_DestroyWindow(window);
-		fprintf(stderr, "SQLCreateRenderer Error: %sn", SDL_GetError());
-		SDL_Quit();
-		return (1);
-	}
 
 	while ("C is awesome")
 	{
-		SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
-		SDL_RenderClear(renderer);
-		draw_stuff(renderer);
-		SDL_RenderPresent(renderer);
+		SDL_SetRenderDrawColor(instance.renderer, 0, 0, 0, 0);
+		SDL_RenderClear(instance.renderer);
+		if (poll_events(&x, &y) == 1)
+			break;
+		draw_stuff(instance, x, y);
+		SDL_RenderPresent(instance.renderer);
+	}
+	SDL_DestroyRenderer(instance.renderer);
+	SDL_DestroyWindow(instance.window);
+	SDL_Quit();
+	printf("%i,%i\n", x, y);
+	return (0);
+}
+
+void draw_stuff(SDL_Instance instance, int x, int y)
+{
+	SDL_SetRenderDrawColor(instance.renderer, 0xFF, 0xFF, 0xFF, 0xFF);
+	SDL_RenderDrawLine(instance.renderer, 500, 500, x, y);
+}
+
+int poll_events(int *x, int *y)
+{
+	SDL_Event event;
+	SDL_KeyboardEvent key;
+
+	while (SDL_PollEvent(&event))
+	{
+		switch (event.type)
+		{
+		case SDL_QUIT:
+			return (1);
+		case SDL_KEYDOWN:
+			key = event.key;
+			/* if escape is pressed */
+			if (key.keysym.scancode == 0x29)
+				return (1);
+			else if (key.keysym.scancode == 0x4F)
+			{
+				*x += 3;
+				return (0);
+			}
+			else if (key.keysym.scancode == 0x50)
+			{
+				*y -=3 ;
+				return(0);
+			}
+			break;
+		}
 	}
 	return (0);
 }
