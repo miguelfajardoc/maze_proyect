@@ -3,8 +3,8 @@
 
 #define MAP_WIDTH = 24
 #define MAP_HEIGHT = 24
-#define TEX_WIDTH = 64
-#define TEX_HEIGHT = 64
+#define WH = 64
+#define HT = 64
 
 #include <SDL2/SDL.h>
 

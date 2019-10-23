@@ -8,7 +8,7 @@ int main(void)
 	int player_x = 500;
 	int player_y = 300;
 	float angle = 90;
-	const int maze[MAP_WIDTH][MAP_HEIGHT] =
+	const int map[MAP_WIDTH][MAP_HEIGHT] =
 		{
 			{4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,7,7,7,7,7,7,7,7},
 			{4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,7,0,0,0,0,0,0,7},
@@ -58,12 +58,12 @@ void draw_stuff(SDL_Instance instance, const int**map, int player_x,
 		int player_y, float angle)
 {
 	int times = 1260;
-	int x_intr = 0;
+	int * x_intr;
 	int y_inter = 0;
 	int minim = 0;
 	int proyection_x = 0;
 	int proyection_y;
-	float angle_ch = 60/1260;
+	float angle_ch = angle/times;
 
 	while (times)
 	{
@@ -80,28 +80,45 @@ void draw_stuff(SDL_Instance instance, const int**map, int player_x,
 	}
 }
 
-int * x_intersection(int x, int y, const int **map, float angle)
+int * x_intersection(int Px, int Py, const int **map, float angle)
 {
-	int A[2];
-	int coord = [0, 0];
-	int flag = 0
+	int Ax, Ay;
+	int coord[2];
+	int flag = 0;
 
-	while(1)
+	coord[0] = floor(Px/64);
+	coord[1] = floor(Py/64);
+
+	while(map[coord[0]][coord[1]] == 0)
 	{
 		if (flag == 0)
 		{
+                        /* - 1 is required, ex: border in 0 is 64, so
+                        64 / 64 = 1, but the cell to verf is 0.*/
 			if (angle < 180)
-				A[1] = floor(y/TEX_WIDTH) * TEX_WIDTH - 1;
+				Ay = floor(Py/WH) * WH - 1;
 			else
-				A[1] = floor(y/TEXT_WIDTH) * TEX_WIDTH + 64;
-			coord[1] = floor(A[1]/64);
-			A[0] = x * (y - A[1])/tan(angle);
-			coord[0] = floor(A[0]/64) = 1;
-			if (map[coord[0], coord[1]] != 0)
-				return (coord);
-			flag = 1;
+			{
+				Ay = floor(Py/WH) * WH + 64;
+				coord[1] = floor(Ay/WH);
+				Ax = Px + (Py - Ay)/tan(angle);
+				coord[0] = floor(Ax/HT);
+			}
 		}
-		
+		else if(flag == 1)
+		{
+			Ay = Ay - WH;
+			Ax = Ax + (Ay + WH)/tan(angle);
+		}
+		else
+		{
+			Ay -= WH;
+			Ax += Ax;
+		}
+		flag++;
+	}
+	return(coord);
+}
 
 int poll_events(int *x, int *y)
 {
