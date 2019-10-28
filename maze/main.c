@@ -80,11 +80,13 @@ void draw_stuff(SDL_Instance instance, const int**map, int player_x,
 	}
 }
 
-int * x_intersection(int Px, int Py, const int **map, float angle)
+void x_intersection(int Px, int Py, const int map[24][24],
+		    float angle, int x_intr[2])
 {
 	int Ax, Ay;
 	int coord[2];
 	int flag = 0;
+	float temp = 0;
 
 	coord[0] = floor(Px/64);
 	coord[1] = floor(Py/64);
@@ -100,24 +102,30 @@ int * x_intersection(int Px, int Py, const int **map, float angle)
 			else
 			{
 				Ay = floor(Py/WH) * WH + 64;
-				coord[1] = floor(Ay/WH);
-				Ax = Px + (Py - Ay)/tan(angle);
-				coord[0] = floor(Ax/HT);
 			}
+			Ax = Px + (Py - Ay)/tan(angle * PI/180);
+			coord[0] = floor(Ax/HT);
+			coord[1] = floor(Ay/WH);
 		}
 		else if(flag == 1)
 		{
 			Ay = Ay - WH;
-			Ax = Ax + (Ay + WH)/tan(angle);
+			temp = (Ay + WH)/tan(angle * PI/180);
+			Ax = Ax + temp;
+			coord[0] = floor(Ax/HT);
+			coord[1] = floor(Ay/WH);
 		}
 		else
 		{
 			Ay -= WH;
-			Ax += Ax;
+			Ax += temp;
+			coord[0] = floor(Ax/HT);
+			coord[1] = floor(Ay/WH);
 		}
 		flag++;
 	}
-	return(coord);
+	x_intr[0] = Ax;
+	x_intr[1] = Ay;
 }
 
 int poll_events(int *x, int *y)
