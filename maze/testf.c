@@ -13,10 +13,10 @@ int main(void)
 	int y_intr[2];
 	int player_x = 500;
 	int player_y = 300;
-	float angle = 90;
+	float angle = 30;
+	float angle_op = 360;
 
-
-	int times = 1260;
+	int times = 360;
 	float angle_ch = 0;
 	const int map[24][24] =
 		{
@@ -55,7 +55,7 @@ int main(void)
 			       y_intr);
 		printf("y_inter points: %d, %d, angle %f\n", y_intr[0], y_intr[1], angle - 30 + angle_ch);
 		times--;
-		angle_ch += angle/1260;
+		angle_ch += angle_op/360;
 	}
 	return 0;
 }
@@ -78,6 +78,8 @@ void y_intersection(int Px, int Py, const int map[24][24], float angle,
 
 	coord[0] = floor(Px/64);
 	coord[1] = floor(Py/64);
+	if (angle == 90 || angle == 180)
+		angle += 0.001;
 
 	while(map[coord[1]][coord[0]] == 0)
 	{
@@ -91,31 +93,45 @@ void y_intersection(int Px, int Py, const int map[24][24], float angle,
 			{
 				Ax = floor(Px/64) * 64 - 1;
 			}
-			if (Py - (tan(angle*3.141592653/180) * (Ax - Px)) < 0)
+			temp = Py + (tan(angle*3.141592653/180) * (Px - Ax));
+			if ( temp < 0 )
 				Ay = 0;
+			else if ( temp > (24 * 64))
+				Ay = 24 * 64;
 			else
-				Ay = Py - (tan(angle*3.141592653/180) * (Ax - Px));
+				Ay = Py + (tan(angle*3.141592653/180) * (Px - Ax));
 			coord[0] = floor(Ax/64);
 			coord[1] = floor(Ay/64);
 		}
 		else if(flag == 1)
 		{
-			Ax = Ax + 64;
-			temp = tan(angle*3.141592653/180) * 64;
-			if (Ay - temp < 0)
-				Ay = 0;
+			if (angle < 90 || angle > 270)
+				Ax = Ax + 64;
 			else
-				Ay = Ay - temp;
+				Ax = Ax - 64;
+			temp = Ay - tan(angle*3.141592653/180) * 64;
+			if (temp < 0)
+				Ay = 0;
+			else if (temp > ( 24 * 64))
+				Ay = 64 * 24;
+			else
+				Ay = temp;
 			coord[0] = floor(Ax/64);
 			coord[1] = floor(Ay/64);
 		}
 		else
 		{
-			Ax += 64;
-			if (Ay - temp < 0)
-				Ay = 0;
+			if (angle < 90 || angle > 270)
+				Ax += 64;
 			else
-				Ay -= temp;
+				Ax -= 64;
+			temp = Ay - tan(angle*3.141592653/180) * 64;
+			if (temp < 0)
+				Ay = 0;
+			else if (temp > ( 24 * 64))
+				Ay = 64 * 24;
+			else
+				Ay = temp;
 			coord[0] = floor(Ax/64);
 			coord[1] = floor(Ay/64);
 		}
@@ -159,22 +175,43 @@ void x_intersection(int Px, int Py, const int map[24][24], float angle, int x_in
 			{
 				Ay = floor(Py/64) * 64 + 64;
 			}
-			Ax = Px + (Py - Ay)/tan(angle*3.141592653/180);
+			/*if (angle > 270)
+			  angle *= -1;*/
+			temp = Px + (Py - Ay)/tan(angle*3.141592653/180);
+			if ( temp < 0)
+				Ax = 0;
+			else if (temp > (24 * 64))
+				Ax = 24 * 64;
+			else
+				Ax = Px + (Py - Ay)/tan(angle*3.141592653/180);
 			coord[0] = floor(Ax/64);
 			coord[1] = floor(Ay/64);
 		}
 		else if(flag == 1)
 		{
 			Ay = Ay - 64;
-			temp = 64/tan(angle*3.141592653/180);
-			Ax = Ax + temp;
+			/*if (angle > 270)
+			  angle *= -1;*/
+			temp = Ax + 64/tan(angle*3.141592653/180);
+			if ( temp < 0)
+				Ax = 0;
+			else if (temp > (24 * 64))
+				Ax = 24 * 64;
+			else
+				Ax = temp;
 			coord[0] = floor(Ax/64);
 			coord[1] = floor(Ay/64);
 		}
 		else
 		{
 			Ay -= 64;
-			Ax += temp;
+			temp = Ax + 64/tan(angle*3.141592653/180);
+			if ( temp < 0)
+				Ax = 0;
+			else if (temp > (24 * 64))
+				Ax = 24 * 64;
+			else
+				Ax += temp;
 			coord[0] = floor(Ax/64);
 			coord[1] = floor(Ay/64);
 		}
