@@ -1,22 +1,26 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
+#define MIN(X, Y) (((X) < (Y)) ? (X) : (Y))
+#define TIMES 1080
 
 void x_intersection(int Px, int Py, const int map[24][24], float angle,
 		    int coord[2]);
 void y_intersection(int Px, int Py, const int map[24][24], float angle,
 		    int y_intr[2]);
+void minimum(int Px, int Py, int x_intr[2], int y_intr[2], int **min);
 
 int main(void)
 {
 	int x_intr[2];
 	int y_intr[2];
+	int *min = NULL;
 	int player_x = 500;
 	int player_y = 300;
-	float angle = 30;
-	float angle_op = 360;
+	float angle = 60;
+	float angle_op = 60;
 
-	int times = 360;
+	int times = TIMES;
 	float angle_ch = 0;
 	const int map[24][24] =
 		{
@@ -55,9 +59,42 @@ int main(void)
 			       y_intr);
 		printf("y_inter points: %d, %d, angle %f\n", y_intr[0], y_intr[1], angle - 30 + angle_ch);
 		times--;
-		angle_ch += angle_op/360;
+		angle_ch += angle_op/TIMES;
+		minimum(player_x, player_y, x_intr, y_intr, &min);
+		printf("here\n");
+		printf("the minimum coordenate %d, %d\n", *(min), *(min + 1));
 	}
 	return 0;
+}
+/**
+ * minimum - Find the minimum distance between two coordenates to the player and
+ * saves the direction of the variable that the minimum coordenate
+ * @Px: the current player position in x
+ * @Py: the current player position in y
+ * @x_intr: the coordenate with the x axis
+ * @y_intr: the coordenate with the y axis
+ * @min: the variable that holds the direction of the minimum coordenate
+ */
+void minimum(int Px, int Py, int x_intr[2], int y_intr[2], int ** min_coord)
+{
+	float hipx = 0;
+	float hipy = 0;
+	float min = 0;
+
+	min_coord = min_coord;
+
+	min = 0;
+	hipx = sqrt(pow(x_intr[0] - Px, 2) + pow(x_intr[1] - Py, 2));
+	printf("hipx: %f\n", hipx);
+	hipy = sqrt(pow(y_intr[0] - Px, 2) + pow(y_intr[1] - Py, 2));
+	printf("hipy: %f\n", hipy);
+	min = MIN(hipx, hipy);
+	printf("the min is: %f\n", min);
+	if (min == hipx)
+		*min_coord = x_intr;
+	else
+		*min_coord = y_intr;
+
 }
 /**
  * y_intersection - Find the coordenates that the ray intersect with the
@@ -71,7 +108,7 @@ int main(void)
 void y_intersection(int Px, int Py, const int map[24][24], float angle,
 		    int y_intr[2])
 {
-	int Ax, Ay;
+	float Ax, Ay;
 	int flag = 0;
 	int coord[2];
 	float temp = 0;
@@ -140,8 +177,8 @@ void y_intersection(int Px, int Py, const int map[24][24], float angle,
 		  printf("points: %d, %d\n", Ax, Ay);*/
 	}
 	printf("coord maze_y: %d, %d\n", coord[1], coord[0]);
-	y_intr[0] = Ax;
-	y_intr[1] = Ay;
+	y_intr[0] = (int)Ax;
+	y_intr[1] = (int)Ay;
 }
 
 /**
@@ -155,7 +192,7 @@ void y_intersection(int Px, int Py, const int map[24][24], float angle,
  */
 void x_intersection(int Px, int Py, const int map[24][24], float angle, int x_intr[2])
 {
-	int Ax, Ay;
+	float Ax, Ay;
 	int flag = 0;
 	int coord[2];
 	float temp = 0;
@@ -183,7 +220,7 @@ void x_intersection(int Px, int Py, const int map[24][24], float angle, int x_in
 			else if (temp > (24 * 64))
 				Ax = 24 * 64;
 			else
-				Ax = Px + (Py - Ay)/tan(angle*3.141592653/180);
+				Ax = temp;
 			coord[0] = floor(Ax/64);
 			coord[1] = floor(Ay/64);
 		}
@@ -211,7 +248,7 @@ void x_intersection(int Px, int Py, const int map[24][24], float angle, int x_in
 			else if (temp > (24 * 64))
 				Ax = 24 * 64;
 			else
-				Ax += temp;
+				Ax = temp;
 			coord[0] = floor(Ax/64);
 			coord[1] = floor(Ay/64);
 		}
@@ -220,6 +257,6 @@ void x_intersection(int Px, int Py, const int map[24][24], float angle, int x_in
 		  printf("points: %d, %d\n", Ax, Ay);*/
 	}
 	printf("coord maze_x: %d, %d\n", coord[1], coord[0]);
-	x_intr[0] = Ax;
-	x_intr[1] = Ay;
+	x_intr[0] = (int)Ax;
+	x_intr[1] = (int)Ay;
 }
