@@ -8,6 +8,8 @@ int main(void)
 	int player_x = 500;
 	int player_y = 300;
 	float angle = 90;
+	int *ray = malloc(sizeof(int) * 2);
+
 	const int map[MAP_WIDTH][MAP_HEIGHT] =
 		{
 			{4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,7,7,7,7,7,7,7,7},
@@ -42,11 +44,12 @@ int main(void)
 	{
 		SDL_SetRenderDrawColor(instance.renderer, 0, 0, 0, 0);
 		SDL_RenderClear(instance.renderer);
-		if (poll_events(&player_x, &player_y, &angle) == 1)
+		draw_stuff(instance, map, player_x, player_y, angle, ray);
+		if (poll_events(&player_x, &player_y, &angle, ray) == 1)
 			break;
-		draw_stuff(instance, map, player_x, player_y, angle);
 		SDL_RenderPresent(instance.renderer);
 	}
+	free(ray);
 	SDL_DestroyRenderer(instance.renderer);
 	SDL_DestroyWindow(instance.window);
 	SDL_Quit();
@@ -55,7 +58,7 @@ int main(void)
 }
 
 void draw_stuff(SDL_Instance instance, const int map[24][24], int player_x,
-		int player_y, float angle)
+		int player_y, float angle, int *ray)
 {
 	int times = TIMES;
 	int x_intr[2];
@@ -89,13 +92,21 @@ void draw_stuff(SDL_Instance instance, const int map[24][24], int player_x,
 		SDL_RenderDrawLine(instance.renderer, player_x, player_y, min[0]
 				   , min[1]);
 		--times;
+		/*
+		if (times == TIMES / 2)
+		{
+			*ray = min[0];
+			*(ray + 1) = min[1];
+			}*/
 		/*printf("min: [%d], [%d]", min[0], min[1]);
 		  printf("times: %d\n", times);*/
 		/*angle_ch += angle_ch;*/
 	}
+	*ray = min[0];
+	*(ray + 1) = min[1];
 }
 
-int poll_events(int *x, int *y, float *angle)
+int poll_events(int *x, int *y, float *angle, int *ray)
 {
 	SDL_Event event;
 	SDL_KeyboardEvent key;
@@ -109,7 +120,9 @@ int poll_events(int *x, int *y, float *angle)
 		case SDL_KEYDOWN:
 			key = event.key;
 			/* if escape is pressed */
-			printf("angle:%f\n", *angle);
+			printf("angle:%f\n", *angle + 45/2);
+			printf("ray: %d, %d\n", ray[0], ray[1]);
+			printf("position: %d, %d", *x, *y);
 			if (key.keysym.scancode == 0x29)
 				return (1);
 			else if (key.keysym.scancode == 0x4F)
