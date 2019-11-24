@@ -53,6 +53,11 @@ void y_intersection(int Px, int Py, const int map[24][24], float angle,
 	if (angle == 90 || angle == 180)
 		angle += 0.001;
 
+	if (angle > 360)
+		angle = angle - 360;
+	else if (angle < 0)
+		angle = angle + 360;
+
 	while(map[coord[1]][coord[0]] == 0)
 	{
 		if (flag == 0)
@@ -141,6 +146,10 @@ void x_intersection(int Px, int Py, const int map[24][24], float angle, int x_in
 
 	coord[0] = floor(Px/64);
 	coord[1] = floor(Py/64);
+	if (angle > 360)
+		angle = angle - 360;
+	else if (angle < 0)
+		angle = angle + 360;
 
 	while(map[coord[1]][coord[0]] == 0)
 	{

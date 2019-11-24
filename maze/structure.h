@@ -7,7 +7,7 @@
 #define HT 64
 #define PI 3.14189265
 #define MIN(X, Y) (((X) < (Y)) ? (X) : (Y))
-#define TIMES 1
+#define TIMES 1260
 
 #include <SDL2/SDL.h>
 
