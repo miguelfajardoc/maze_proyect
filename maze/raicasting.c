@@ -46,6 +46,7 @@ void y_intersection(int Px, int Py, const int map[24][24], float angle,
 	int flag = 0;
 	int coord[2];
 	float temp = 0;
+	int sign = 0;
 
 	coord[0] = floor(Px/64);
 	coord[1] = floor(Py/64);
@@ -59,12 +60,18 @@ void y_intersection(int Px, int Py, const int map[24][24], float angle,
                         /* - 1 is required, ex: border in 0 is 64, so
                         64 / 64 = 1, but the cell to verf is 0.*/
 			if (angle < 90 || angle > 270)
+			{
 				Ax = floor(Px/64) * 64 + 64;
+			}
 			else
 			{
 				Ax = floor(Px/64) * 64 - 1;
 			}
-			temp = Py + (tan(angle*3.141592653/180) * (Px - Ax));
+			if ( angle < 180 )
+				sign = -1;
+			else
+				sign = 1;
+			temp = Py + sign * abs((tan(angle*3.141592653/180) * (Ax - Px)));
 			if ( temp < 0 )
 				Ay = 0;
 			else if ( temp > (24 * 64))
@@ -80,7 +87,7 @@ void y_intersection(int Px, int Py, const int map[24][24], float angle,
 				Ax = Ax + 64;
 			else
 				Ax = Ax - 64;
-			temp = Ay + tan(angle*3.141592653/180) * 64;
+			temp = Ay + sign * abs(tan(angle*3.141592653/180) * 64);
 			if (temp < 0)
 				Ay = 0;
 			else if (temp > ( 24 * 64))
@@ -96,7 +103,7 @@ void y_intersection(int Px, int Py, const int map[24][24], float angle,
 				Ax += 64;
 			else
 				Ax -= 64;
-			temp = Ay + tan(angle*3.141592653/180) * 64;
+			temp = Ay + sign * abs(tan(angle*3.141592653/180) * 64);
 			if (temp < 0)
 				Ay = 0;
 			else if (temp > ( 24 * 64))
@@ -142,18 +149,19 @@ void x_intersection(int Px, int Py, const int map[24][24], float angle, int x_in
                         /* - 1 is required, ex: border in 0 is 64, so
                         64 / 64 = 1, but the cell to verf is 0.*/
 			if (angle < 180)
+			{
 				Ay = floor(Py/64) * 64 - 1;
+			}
 			else
 			{
 				Ay = floor(Py/64) * 64 + 64;
 			}
-			/*if (angle > 270)
-			  angle *= -1;*/
-			if (Py > Ay)
+			if (angle > 270 || angle < 90)
 				sign = 1;
 			else
 				sign = -1;
-			temp = Px + (Py - Ay)/tan(angle*3.141592653/180);
+
+			temp = Px + sign * abs((Py - Ay)/tan(angle*3.141592653/180));
 			if ( temp < 0)
 				Ax = 0;
 			else if (temp > (24 * 64))
@@ -165,10 +173,11 @@ void x_intersection(int Px, int Py, const int map[24][24], float angle, int x_in
 		}
 		else if(flag == 1)
 		{
-			Ay = Ay - 64;
-			/*if (angle > 270)
-			  angle *= -1;*/
-			temp = Ax + (sign * 64)/tan(angle*3.141592653/180);
+			if (angle > 180)
+				Ay = Ay + 64;
+			else
+				Ay = Ay - 64;
+			temp = Ax + sign * abs(64/tan(angle*3.141592653/180));
 			if ( temp < 0)
 				Ax = 0;
 			else if (temp > (24 * 64))
@@ -180,8 +189,11 @@ void x_intersection(int Px, int Py, const int map[24][24], float angle, int x_in
 		}
 		else
 		{
-			Ay -= 64;
-			temp = Ax + (sign * 64)/tan(angle*3.141592653/180);
+			if (angle > 180)
+				Ay = Ay + 64;
+			else
+				Ay = Ay - 64;
+			temp = Ax + sign * abs(64/tan(angle*3.141592653/180));
 			if ( temp < 0)
 				Ax = 0;
 			else if (temp > (24 * 64))

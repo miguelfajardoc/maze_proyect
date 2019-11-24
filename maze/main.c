@@ -5,9 +5,9 @@
 int main(void)
 {
 	SDL_Instance instance;
-	int player_x = 500;
-	int player_y = 300;
-	float angle = 90;
+	int player_x = 480;
+	int player_y = 351;
+	float angle = 45;
 	int *ray = malloc(sizeof(int) * 2);
 
 	const int map[MAP_WIDTH][MAP_HEIGHT] =
@@ -68,7 +68,7 @@ void draw_stuff(SDL_Instance instance, const int map[24][24], int player_x,
 	/*int proyection_x = 0;
 	  int proyection_y;*/
 
-	float angle_op = 45;
+	float angle_op = 0;
 	float angle_ch = 0;
 
 	while (times)
@@ -120,41 +120,41 @@ int poll_events(int *x, int *y, float *angle, int *ray)
 		case SDL_KEYDOWN:
 			key = event.key;
 			/* if escape is pressed */
-			printf("angle:%f\n", *angle + 45/2);
-			printf("ray: %d, %d\n", ray[0], ray[1]);
-			printf("position: %d, %d", *x, *y);
 			if (key.keysym.scancode == 0x29)
 				return (1);
 			else if (key.keysym.scancode == 0x4F)
 			{
 				*x += 3;
-				return (0);
+/*				return (0);*/
 			}
 			else if (key.keysym.scancode == 0x50)
 			{
 				*x -=3 ;
-				return(0);
+/*				return(0);*/
 			}
 			else if (key.keysym.scancode == 0x52)
 			{
 				*y -=3 ;
-				return(0);
+/*				return(0);*/
 			}
 			else if (key.keysym.scancode == 0x51)
 			{
 				*y +=3 ;
-				return(0);
+/*				return(0);*/
 			}
 			else if (key.keysym.scancode == 0x004)
 			{
 				*angle +=1 ;
-				return(0);
+/*				return(0);*/
 			}
 			else if (key.keysym.scancode == 0x007)
 			{
 				*angle -=1 ;
-				return(0);
+/*				return(0);*/
 			}
+			printf("angle:%f\n", *angle);
+			printf("ray: %d, %d\n", ray[0], ray[1]);
+			printf("position: %d, %d\n", *x, *y);
 			/*else if (key.keysym.scancode != SDL_GetScancodeFromKey
 			    (key.keysym.sym)) {
 				SDL_Log("Physical %s key acting as %s key",
