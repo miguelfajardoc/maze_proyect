@@ -1,6 +1,4 @@
 #include "structure.h"
-#include <stdlib.h>
-#include <math.h>
 
 int main(void)
 {
@@ -44,7 +42,7 @@ int main(void)
 	{
 		SDL_SetRenderDrawColor(instance.renderer, 0, 0, 0, 0);
 		SDL_RenderClear(instance.renderer);
-		if (angle > 360)
+		if (angle >= 360)
 			angle -= 360;
 		else if (angle < 0)
 			angle += 360;
@@ -69,12 +67,13 @@ void draw_stuff(SDL_Instance instance, const int map[24][24], int player_x,
 	int x_intr[2];
 	int y_intr[2];
 	int *min = NULL;
-
+	int dist_wall = 0;
 	/*int proyection_x = 0;
 	  int proyection_y;*/
-
-	float angle_op = 45;
+	float angle_op = 0;
 	float angle_ch = 0;
+
+	dist_wall = dist_wall;
 
 	while (times)
 	{
@@ -88,7 +87,7 @@ void draw_stuff(SDL_Instance instance, const int map[24][24], int player_x,
 		minimum(player_x, player_y, x_intr, y_intr, &min);
 		/*printf("here\n");
 		  printf("the minimum coordenate %d, %d\n", *(min), *(min + 1));*/
-
+		dist_wall = distance_to_wall(player_x, player_y, min, angle);
 		/*proyection_calc(&proyection_x, &proyection_y, minim, angle);*/
 		SDL_SetRenderDrawColor(instance.renderer, 0xFF, 0xFF, 0xFF, 0xFF);
 		/*SDL_RenderDrawLine(instance.renderer, proyection_x -low ,
@@ -160,6 +159,7 @@ int poll_events(int *x, int *y, float *angle, int *ray)
 			printf("angle:%f\n", *angle);
 			printf("ray: %d, %d\n", ray[0], ray[1]);
 			printf("position: %d, %d\n", *x, *y);
+			printf("distance to wall: %d\n", distance_to_wall(*x, *y, ray, *angle));
 			/*else if (key.keysym.scancode != SDL_GetScancodeFromKey
 			    (key.keysym.sym)) {
 				SDL_Log("Physical %s key acting as %s key",
