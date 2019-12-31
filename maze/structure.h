@@ -7,7 +7,9 @@
 #define HT 64
 #define PI 3.14189265
 #define MIN(X, Y) (((X) < (Y)) ? (X) : (Y))
-#define TIMES 1
+#define TIMES 800
+#define SCREEN_HEIGHT 600
+#define SCREEN_WIDTH 800
 
 #include <SDL2/SDL.h>
 #include <stdlib.h>
@@ -34,7 +36,7 @@ void y_intersection(int Px, int Py, const int map[24][24], float angle,
 void minimum(int Px, int Py, int x_intr[2], int y_intr[2], int **min);
 
 /*functions in helper_functions.c*/
-int distance_to_wall(int Px, int Py, const int * min, float angle);
-int fishbowl_corrector(float brute_distance, float angle);
+int distance_to_wall(int Px, int Py, const int * min, float angle, float angle_ray);
+int fishbowl_corrector(float brute_distance, float angle, float angle_ray);
 
 #endif
