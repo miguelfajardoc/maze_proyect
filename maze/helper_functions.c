@@ -13,18 +13,23 @@ int distance_to_wall(int Px, int Py, const int * coord, float angle, float angle
 {
 	int distance = 0;
 	float brute_distance = 0;
+	int dif = abs(Px - coord[0]);
 
-	if (angle_ray == 90 || angle_ray == 270)
+	/*if ((angle_ray >= 89.5  && angle <= 90.5) || (angle_ray >= 269.5 && angle <= 270.5))
 	{
 		distance = abs(Py - coord[1]);
 		return distance;
 	}
 	if (angle_ray == 0 || angle_ray == 180)
 	{
-		distance = abs(Px - coord[1]);
+		distance = abs(Px - coord[0]);
 		return distance;
 	}
-	brute_distance  = abs(Px - coord[0]) / cos(angle_ray * PI / 180);
+	if (dif == 0)
+		dif = abs(Py - coord[1]);
+	brute_distance  = abs(dif / cos(angle_ray * PI / 180));*/
+	brute_distance = sqrt(pow(Px - coord[0], 2) + pow(Py - coord[1], 2));
+	/*distance = brute_distance;*/
 	distance = fishbowl_corrector(brute_distance, angle, angle_ray);
 	return distance;
 }
@@ -46,7 +51,7 @@ int fishbowl_corrector(float brute_distance, float angle, float angle_ray)
 		return (int)brute_distance;
 	}
 	complement_angle = abs(angle - angle_ray);
-	distance = brute_distance * cos(complement_angle * PI / 180);
+	distance = abs(brute_distance * cos(complement_angle * PI / 180));
 
 	return distance;
 }

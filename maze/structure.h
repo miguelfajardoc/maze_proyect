@@ -25,8 +25,8 @@ int init_instance(SDL_Instance *);
 
 /*functions in main.c*/
 void draw_stuff(SDL_Instance instance, const int map[24][24], int player_x,
-		 int player_y, float angle, int *ray);
-int poll_events(int *x, int *y, float *angle, int *ray);
+		 int player_y, float angle, int *ray, int * dist_wall);
+int poll_events(int *x, int *y, float *angle, int *ray, int * dist_wall);
 
 /*functions in raycasting.c*/
 void x_intersection(int Px, int Py, const int map[24][24], float angle,
