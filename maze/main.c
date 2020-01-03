@@ -5,7 +5,7 @@ int main(void)
 	SDL_Instance instance;
 	int player_x = 480;
 	int player_y = 357;
-	float angle = 274;
+	float angle = 90;
 	int *ray = malloc(sizeof(int) * 2);
 	int * dist_wall;
 
@@ -113,6 +113,7 @@ int poll_events(int *x, int *y, float *angle, int *ray, int * dist_wall)
 {
 	SDL_Event event;
 	SDL_KeyboardEvent key;
+	int speed = 3;
 
 	while (SDL_PollEvent(&event))
 	{
@@ -127,33 +128,27 @@ int poll_events(int *x, int *y, float *angle, int *ray, int * dist_wall)
 				return (1);
 			else if (key.keysym.scancode == 0x4F)
 			{
-				*x += 3;
-/*				return (0);*/
+				move_calculation(*angle, speed, 'r', x, y);
 			}
 			else if (key.keysym.scancode == 0x50)
 			{
-				*x -=3 ;
-/*				return(0);*/
+				move_calculation(*angle, speed, 'l', x, y);
 			}
 			else if (key.keysym.scancode == 0x52)
 			{
-				*y -=3 ;
-/*				return(0);*/
+				move_calculation(*angle, speed, 'u', x, y);
 			}
 			else if (key.keysym.scancode == 0x51)
 			{
-				*y +=3 ;
-/*				return(0);*/
+				move_calculation(*angle, speed, 'd', x, y);
 			}
 			else if (key.keysym.scancode == 0x004)
 			{
 				*angle +=1 ;
-/*				return(0);*/
 			}
 			else if (key.keysym.scancode == 0x007)
 			{
 				*angle -=1 ;
-/*				return(0);*/
 			}
 			printf("angle:%f\n", *angle);
 			printf("ray: %d, %d\n", ray[0], ray[1]);
@@ -173,3 +168,19 @@ int poll_events(int *x, int *y, float *angle, int *ray, int * dist_wall)
 	}
 	return (0);
 }
+
+void move_calculation(int angle, int speed, char direction, int * x, int * y)
+{
+	if (direction == 'r')
+		angle -= 90;
+	else if (direction == 'l')
+		angle += 90;
+	else if (direction == 'u')
+		angle += 180;
+	printf("angle move: %d\n", angle);
+	*x += floor(10 * speed * cos(angle * PI / 180)) / 10;
+	printf("x change: %f\n", floor(10 * speed * cos(angle * PI / 180)) / 10);
+	*y += floor(10 * speed * sin(angle * PI / 180)) / 10;
+	printf("y change: %f\n", floor(10 * speed * sin(angle * PI / 180)) / 10);
+}
+

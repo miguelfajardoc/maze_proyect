@@ -5,7 +5,7 @@
 #define MAP_HEIGHT 24
 #define WH 64
 #define HT 64
-#define PI 3.14189265
+#define PI 3.141892653589793238
 #define MIN(X, Y) (((X) < (Y)) ? (X) : (Y))
 #define TIMES 800
 #define SCREEN_HEIGHT 600
@@ -38,5 +38,8 @@ void minimum(int Px, int Py, int x_intr[2], int y_intr[2], int **min);
 /*functions in helper_functions.c*/
 int distance_to_wall(int Px, int Py, const int * min, float angle, float angle_ray);
 int fishbowl_corrector(float brute_distance, float angle, float angle_ray);
+
+/*functions in player control*/
+void move_calculation(int angle, int speed, char direction, int * x, int * y);
 
 #endif

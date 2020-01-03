@@ -29,7 +29,6 @@ int distance_to_wall(int Px, int Py, const int * coord, float angle, float angle
 		dif = abs(Py - coord[1]);
 	brute_distance  = abs(dif / cos(angle_ray * PI / 180));*/
 	brute_distance = sqrt(pow(Px - coord[0], 2) + pow(Py - coord[1], 2));
-	/*distance = brute_distance;*/
 	distance = fishbowl_corrector(brute_distance, angle, angle_ray);
 	return distance;
 }
@@ -52,6 +51,5 @@ int fishbowl_corrector(float brute_distance, float angle, float angle_ray)
 	}
 	complement_angle = abs(angle - angle_ray);
 	distance = abs(brute_distance * cos(complement_angle * PI / 180));
-
 	return distance;
 }
